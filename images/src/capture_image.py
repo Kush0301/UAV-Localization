@@ -17,17 +17,13 @@ def image_callback(ros_image):
   except CvBridgeError as e:
       print(e)
 
-  (rows,cols,channels) = cv_image.shape
+
   cv2.imshow("Image window", cv_image)
   cv2.waitKey(3)
 
   
 def main(args):
   rospy.init_node('image_converter', anonymous=True)
-  #for turtlebot3 waffle
-  #image_topic="/camera/rgb/image_raw/compressed"
-  #for usb cam
-  #image_topic="/usb_cam/image_raw"
   image_sub = rospy.Subscriber("/webcam/image_raw",Image, image_callback)
   try:
     rospy.spin()
