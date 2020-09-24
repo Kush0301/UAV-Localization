@@ -203,3 +203,5 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+add_executable(imu_listener src/imu.cpp)
+target_link_libraries(imu_listener ${catkin_LIBRARIES})

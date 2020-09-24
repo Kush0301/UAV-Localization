@@ -1,0 +1,27 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/home/kushagra/catkin_ws/devel/include/**",
+                "/opt/ros/melodic/include/**",
+                "/home/kushagra/catkin_ws/src/iq_gnc/include/**",
+                "/home/kushagra/catkin_ws/src/mavros/libmavconn/include/**",
+                "/home/kushagra/catkin_ws/src/sitl_gazebo/include/**",
+                "/home/kushagra/catkin_ws/src/mavros/mavros/include/**",
+                "/home/kushagra/catkin_ws/src/mavros/mavros_msgs/include/**",
+                "/home/kushagra/catkin_ws/src/mavros/test_mavros/include/**",
+                "/usr/include/**"
+            ],
+            "name": "ROS",
+            "intelliSenseMode": "gcc-x64",
+            "compilerPath": "/usr/lib/ccache/gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "gnu++14"
+        }
+    ],
+    "version": 4
+}
