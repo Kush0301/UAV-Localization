@@ -22,7 +22,8 @@ def initialize():
     camera_info=rospy.wait_for_message("/webcam/camera_info",CameraInfo)
     k=camera_info.K
     k=np.array(k).reshape(3,3)
-    print("Got Calibration matrix:",k)
+    print("Got Calibration matrix:")
+    print(k)
 
     #Initial Position of UAV
     initial_pose=rospy.wait_for_message("/mavros/global_position/local",Odometry)
@@ -40,11 +41,12 @@ def initialize():
     print("Initial Pose published")
 
 
-    rotation=euler_matrix(euler[0],euler[1],euler[2],'rxyz')          #Initial orientation in matrix form
+    rotation=euler_matrix(euler[0],euler[1],euler[2],'sxyz')[:3,:3]         #Initial orientation in matrix form
     translation=np.array(pos)             #Initial pose in array form   
-    print("Intial position:",translation)
-    print("Intial orientation:",rotation)
-
+    print("Intial position")
+    print(translation)
+    print("Intial orientation:")
+    print(rotation)
 
 
     #Get first image
@@ -65,9 +67,10 @@ def initialize():
 
         #Check pixel difference to verify motion
         kp1,kp2,diff=track_features(image_initial, image_next, kp1)
+
         odom_pub.publish(initial_pose)
 
-    
+    print(kp1.shape[0],kp2.shape[0])
     print("Motion detected...") 
     E,mask=cv2.findEssentialMat(kp2,kp1,k,cv2.RANSAC,prob=0.999,threshold=0.1, mask=None)
     kp1=kp1[mask.ravel()==1]
@@ -88,7 +91,9 @@ def initialize():
     odom=Odometry()
     odom.header.stamp=t
     odom.pose.pose.position=translation.tolist()
-    odom.pose.pose.orientation=quaternion_from_euler(list(euler_from_matrix(rotation,'rxyz')))
+    rotation1=np.hstack((rotation,np.array([0,0,0]).T))
+    rotation1=np.vstack((rotation1,np,array[0,0,0,1]))
+    odom.pose.pose.orientation=quaternion_from_euler(list(euler_from_matrix(rotation1,'sxyz')))
     odom.covariance=p_cov.reshape(36,1).tolist()
     odom_pub.publish(odom)
 
@@ -117,7 +122,7 @@ def initialize():
         kp2=extract_features(image_next)
 
         kp1,kp2,diff=track_features(image_ref,image_next,kp1)
-
+        print(kp1.shape[0],kp2.shape[0])
         if diff>pixdiff:
             if kp1.shape[0]<threshold:
                 kp2=extract_features(image_next)
