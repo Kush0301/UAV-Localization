@@ -67,7 +67,7 @@ def initialize():
 
         #Check pixel difference to verify motion
         kp1,kp2,diff=track_features(image_initial, image_next, kp1)
-
+        initial_pose.header.stamp=t
         odom_pub.publish(initial_pose)
 
     print(kp1.shape[0],kp2.shape[0])
