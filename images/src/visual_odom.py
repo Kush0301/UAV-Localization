@@ -18,6 +18,7 @@ def initialize():
     odom_pub=rospy.Publisher("visual_odom", Odometry, queue_size=10)
     pixdiff=2
     bridge=CvBridge()
+    
     #Camera info
     camera_info=rospy.wait_for_message("/webcam/camera_info",CameraInfo)
     k=camera_info.K
@@ -69,7 +70,7 @@ def initialize():
         kp1,kp2,diff=track_features(image_initial, image_next, kp1)
         initial_pose.header.stamp=t
         odom_pub.publish(initial_pose)
-
+    
     print(kp1.shape[0],kp2.shape[0])
     print("Motion detected...") 
     E,mask=cv2.findEssentialMat(kp2,kp1,k,cv2.RANSAC,prob=0.999,threshold=0.1, mask=None)
@@ -91,9 +92,10 @@ def initialize():
     odom=Odometry()
     odom.header.stamp=t
     odom.pose.pose.position=translation.tolist()
-    rotation1=np.hstack((rotation,np.array([0,0,0]).T))
-    rotation1=np.vstack((rotation1,np,array[0,0,0,1]))
-    odom.pose.pose.orientation=quaternion_from_euler(list(euler_from_matrix(rotation1,'sxyz')))
+    rotation1=np.hstack((rotation,np.zeros((3,1))))
+    rotation1=np.vstack((rotation1,np.array([0,0,0,1]).reshape(1,4)))
+    euler=list(euler_from_matrix(rotation1,'sxyz'))
+    odom.pose.pose.orientation=quaternion_from_euler(euler[0],euler[1],euler[2])
     odom.covariance=p_cov.reshape(36,1).tolist()
     odom_pub.publish(odom)
 
@@ -119,7 +121,6 @@ def initialize():
         odom.header.stamp=image_next.header.stamp #Time at which image was taken
         print("Time:",odom.header.stamp)
         image_next=bridge.imgmsg_to_cv2(image_next, "bgr8")
-        kp2=extract_features(image_next)
 
         kp1,kp2,diff=track_features(image_ref,image_next,kp1)
         print(kp1.shape[0],kp2.shape[0])
@@ -146,8 +147,11 @@ def initialize():
     translation=translation+scale*rotation.dot(trans)
     rotation=rotation.dot(rmat)
     
+    rotation1=np.hstack((rotation,np.zeros((3,1))))
+    rotation1=np.vstack((rotation1,np.array([0,0,0,1]).reshape(1,4)))
     odom.pose.pose.position=translation.tolist()
-    odom.pose.pose.orientation=quaternion_from_euler(list(euler_from_matrix(rotation,'rxyz')))
+    euler=list(euler_from_matrix(rotation1,'sxyz'))
+    odom.pose.pose.orientation=quaternion_from_euler(euler[0],euler[1],euler[2])
     odom.covariance=p_cov.reshape(36,1).tolist()
     odom_pub.publish(odom)
 
