@@ -43,7 +43,7 @@ def initialize():
 
 
     rotation=euler_matrix(euler[0],euler[1],euler[2],'sxyz')[:3,:3]         #Initial orientation in matrix form
-    translation=np.array(pos)             #Initial pose in array form   
+    translation=np.array(pos).reshape(3,1)             #Initial pose in array form   
     print("Intial position")
     print(translation)
     print("Intial orientation:")
@@ -85,18 +85,25 @@ def initialize():
     
 
     #Propagate translation and rotation
-    translation=translation*rotation.dot(trans)
+    translation=translation+rotation.dot(trans)
     rotation=rotation.dot(rmat)
     
     #Publish odometry values
     odom=Odometry()
     odom.header.stamp=t
-    odom.pose.pose.position=translation.tolist()
     rotation1=np.hstack((rotation,np.zeros((3,1))))
     rotation1=np.vstack((rotation1,np.array([0,0,0,1]).reshape(1,4)))
     euler=list(euler_from_matrix(rotation1,'sxyz'))
-    odom.pose.pose.orientation=quaternion_from_euler(euler[0],euler[1],euler[2])
-    odom.covariance=p_cov.reshape(36,1).tolist()
+    quat=quaternion_from_euler(euler[0],euler[1],euler[2])
+    position=list(translation.reshape(3,))
+    odom.pose.pose.position.x=position[0]
+    odom.pose.pose.position.y=position[1]
+    odom.pose.pose.position.z=position[2]
+    odom.pose.pose.orientation.x=quat[0]
+    odom.pose.pose.orientation.y=quat[1]
+    odom.pose.pose.orientation.z=quat[2]
+    odom.pose.pose.orientation.w=quat[3]
+    odom.pose.covariance=list(p_cov.reshape(36,))
     odom_pub.publish(odom)
 
     print("Time:",t)
@@ -149,10 +156,17 @@ def initialize():
     
     rotation1=np.hstack((rotation,np.zeros((3,1))))
     rotation1=np.vstack((rotation1,np.array([0,0,0,1]).reshape(1,4)))
-    odom.pose.pose.position=translation.tolist()
     euler=list(euler_from_matrix(rotation1,'sxyz'))
-    odom.pose.pose.orientation=quaternion_from_euler(euler[0],euler[1],euler[2])
-    odom.covariance=p_cov.reshape(36,1).tolist()
+    quat=quaternion_from_euler(euler[0],euler[1],euler[2])
+    position=list(translation.reshape(3,))
+    odom.pose.pose.position.x=position[0]
+    odom.pose.pose.position.y=position[1]
+    odom.pose.pose.position.z=position[2]
+    odom.pose.pose.orientation.x=quat[0]
+    odom.pose.pose.orientation.y=quat[1]
+    odom.pose.pose.orientation.z=quat[2]
+    odom.pose.pose.orientation.w=quat[3]
+    odom.pose.covariance=list(p_cov.reshape(36,))
     odom_pub.publish(odom)
 
     print("Translation:",translation)
