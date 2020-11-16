@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/kushagra/catkin_ws/src/iq_sim/build/devel/setup.sh

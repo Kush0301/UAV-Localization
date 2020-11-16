@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: iq_sim
+Description: Description of iq_sim
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

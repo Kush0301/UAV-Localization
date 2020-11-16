@@ -1,0 +1,53 @@
+Detecting C [-std=c11] compiler features failed to compile with the following output:
+Change Dir: /home/kushagra/catkin_ws/src/iq_sim/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/ninja" "cmTC_9909c"
+[1/2] Building C object CMakeFiles/cmTC_9909c.dir/feature_tests.c.o
+FAILED: CMakeFiles/cmTC_9909c.dir/feature_tests.c.o 
+/usr/bin/c99-gcc   -std=c11 -o CMakeFiles/cmTC_9909c.dir/feature_tests.c.o   -c /home/kushagra/catkin_ws/src/iq_sim/build/CMakeFiles/feature_tests.c
+c99-gcc called with non ISO C99 option -std=c11
+ninja: build stopped: subcommand failed.
+
+
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/kushagra/catkin_ws/src/iq_sim/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/ninja" "cmTC_2dc60"
+[1/2] Building C object CMakeFiles/cmTC_2dc60.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_2dc60
+FAILED: cmTC_2dc60 
+: && /usr/bin/c99-gcc   -rdynamic CMakeFiles/cmTC_2dc60.dir/CheckSymbolExists.c.o  -o cmTC_2dc60   && :
+CMakeFiles/cmTC_2dc60.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x1b): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+File /home/kushagra/catkin_ws/src/iq_sim/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/kushagra/catkin_ws/src/iq_sim/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/ninja" "cmTC_0cad7"
+[1/2] Building C object CMakeFiles/cmTC_0cad7.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_0cad7
+FAILED: cmTC_0cad7 
+: && /usr/bin/c99-gcc -DCHECK_FUNCTION_EXISTS=pthread_create  -rdynamic CMakeFiles/cmTC_0cad7.dir/CheckFunctionExists.c.o  -o cmTC_0cad7  -lpthreads && :
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+
