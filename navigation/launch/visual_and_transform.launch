@@ -1,0 +1,4 @@
+<launch>
+  <node name="visual_odometry" pkg="images" type="visual_odometry.py" output="screen"/>
+  <node name="orientation" pkg="navigation" type="orientation.py" output="screen"/>
+</launch>
