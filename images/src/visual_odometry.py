@@ -6,7 +6,7 @@ import os
 from std_msgs.msg import String
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import CameraInfo, Image
-from tf.transformations import quaternion_from_matrix, quaternion_matrix
+from tf.transformations import quaternion_from_matrix, quaternion_matrix,inverse_matrix
 import numpy as np
 import os
 import sys
@@ -38,7 +38,7 @@ def publisher(time, translation,rotation, kp2):
     global cb_matrix,odom_pub,odom, base_link_odom
     trans_mat=np.hstack((rotation,translation.reshape(3,1)))
     trans_mat=np.vstack((trans_mat,np.array([0,0,0,1]).reshape(1,4)))
-    trans_mat=np.matmul(np.linalg.inv(cb_matrix),trans_mat)
+    trans_mat=np.matmul(inverse_matrix(cb_matrix),trans_mat)
     print("Time:")
     print(time)
     print("Translation")
@@ -230,7 +230,7 @@ def relative_transformation(pos1,quat1,pos2,quat2):
     tran_mat2=quaternion_matrix(quat2)
     tran_mat2[:3,3]=pos2
 
-    mat=np.matmul(tran_mat1,np.linalg.inv(tran_mat2))
+    mat=np.matmul(tran_mat1,inverse_matrix(tran_mat2))
     quat12=quaternion_from_matrix(mat)
     pos12=[mat[0,3],mat[1,3],mat[2,3]]
     return pos12,quat12
