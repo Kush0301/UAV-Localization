@@ -36,8 +36,10 @@ cb_quat=Quaternion()
 def publisher(time, translation,rotation, kp2):
 
     global cb_matrix,odom_pub,odom, base_link_odom
+    #Create a homogenous transfomation matrix
     trans_mat=np.hstack((rotation,translation.reshape(3,1)))
     trans_mat=np.vstack((trans_mat,np.array([0,0,0,1]).reshape(1,4)))
+    #Transfoming the information obtained to the base-link frame of reference
     trans_mat=np.matmul(inverse_matrix(cb_matrix),trans_mat)
     print("Time:")
     print(time)
@@ -48,7 +50,8 @@ def publisher(time, translation,rotation, kp2):
     
     quat=quaternion_from_matrix(trans_mat)
     position=list(trans_mat[0:3,3].reshape(3,))
-    
+    np.seed(1)
+    #Random covariance generated on the basis of number of keypoints tracked
     if kp2.shape[0]<=1000:
         p_cov=np.random.random((6,6))+5
     elif kp2.shape[0]>1000 and kp2.shape[0]<=1500:
@@ -221,7 +224,7 @@ def relative_transformation(pos1,quat1,pos2,quat2):
     
     quat1=[quat1.x,quat1.y,quat1.z,quat1.w]
     quat2=[quat2.x,quat2.y,quat2.z,quat2.w]
-    print(quat1,quat2)
+    #print(quat1,quat2)
     pos1=np.array([pos1.x,pos1.y,pos1.z]).reshape(1,3)
     tran_mat1=quaternion_matrix(quat1)
     tran_mat1[:3,3]=pos1
